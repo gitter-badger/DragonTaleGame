@@ -1,0 +1,9 @@
+/Background/SKY_1.png,0,0,0.4
+/BackgroundElement/HILL_2.png,0,0,0.4
+/BackgroundElement/HILL_1.png,0,0,0.4
+---
+/WorldElement/CLOUD_LRG_1.png,225,10,1,0.15,0
+/WorldElement/CLOUD_SML_1.png,110,70,1,0.3,0
+/WorldElement/CLOUD_SML_2.png,10,50,1,0.25,0
+/Misc/DRG_TXT.png,56,30,0.4,0,0
+---
