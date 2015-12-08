@@ -5,15 +5,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
 
 import javax.swing.JPanel;
 
 import gamestates.MenuState;
 
-public class GamePanel extends JPanel implements Runnable, KeyListener {
+public class GamePanel extends JPanel implements Runnable {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,9 +26,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     private int FPS = 60;
     private long targetTime = 1000 / FPS;
 
+    // Let's not do it this way
     MenuState mainMenu = new MenuState("Resources/LevelData/menu.txt");
 
-    // Temporary Variables//
+    // Temporary Variables
     DecimalFormat df = new DecimalFormat("0.00");
     private double currentFPS = 0.00;
 
@@ -40,8 +39,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
 	setFocusable(true);
 	requestFocus();
-
-	addKeyListener(this);
 
 	thread = new Thread(this);
 	thread.start();
@@ -108,24 +105,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
 	// Display FPS for debugging
 	g.setColor(Color.BLACK);
-	g.setFont(new Font("Arial", Font.PLAIN, 25));
+	g.setFont(new Font("Century Gothic", Font.PLAIN, 25));
 	g.drawString("FPS: " + df.format(currentFPS) + "", 3, 24);
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-	// TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-	// TODO Auto-generated method stub
-
     }
 }

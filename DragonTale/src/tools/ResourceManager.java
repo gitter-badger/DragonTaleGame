@@ -18,6 +18,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import entities.BackgroundElement;
 import entities.WorldElement;
+import tools.AudioManager.AudioType;
 
 /**
  * @author anddy
@@ -41,7 +42,12 @@ public class ResourceManager {
 	WORLD_ELEMENT, TEXT_ELEMENT, NARRATION, SOUNDEFFECT, MUSIC, SPRITESHEET, TILESET, BACKGROUND_ELEMENT, SAVEDATA, CONFIG, DIALOG, LEVELDATA
     };
 
+    // Private constructor, this class is a fully static class.
+    private ResourceManager() {
+    }
+
     /**
+     * Loads the requested file. Panics if the file doesn't exist.
      * 
      * @param type
      *            Type of resource being loaded
@@ -71,6 +77,7 @@ public class ResourceManager {
 	    loadImage(type, path, key);
 	    break;
 	case LEVELDATA:
+	    loadLevelData(path);
 	    break;
 	case WORLD_ELEMENT:
 	    break;
@@ -87,20 +94,20 @@ public class ResourceManager {
 	}
     }
 
-    // TODO: Fix Chadra's code present below.   
-    
+    // TODO: Fix Chadra's code present below.
+
     private static final String MARKER = "---";
 
-    private final String LEVEL_DATA_PATH;
-    private ArrayList<String> levelData = new ArrayList<String>();
+    private static String LEVEL_DATA_PATH;
+    private static ArrayList<String> levelData = new ArrayList<String>();
 
-    private BackgroundElement[] backgroundElements;
-    private WorldElement[] worldElements;
+    private static BackgroundElement[] backgroundElements;
+    private static WorldElement[] worldElements;
 
-    BufferedReader dataReader;
+    static BufferedReader dataReader;
 
-    public ResourceManager(String path) {
-	this.LEVEL_DATA_PATH = path;
+    public static void loadLevelData(String path) {
+	LEVEL_DATA_PATH = path;
 
 	try {
 	    dataReader = new BufferedReader(new FileReader(LEVEL_DATA_PATH));
@@ -109,7 +116,7 @@ public class ResourceManager {
 	}
     }
 
-    private void loadData() {
+    private static void loadData() {
 	String currentInput = "";
 	while (!currentInput.equals(MARKER)) {
 	    try {
@@ -123,12 +130,12 @@ public class ResourceManager {
 	}
     }
 
-    public void loadAllData() {
+    public static void loadAllData() {
 	loadBackgroundElements();
 	loadWorldElements();
     }
 
-    private void loadBackgroundElements() {
+    private static void loadBackgroundElements() {
 	loadData();
 	backgroundElements = new BackgroundElement[levelData.size()];
 	for (int i = 0; i < levelData.size(); i++) {
@@ -139,7 +146,7 @@ public class ResourceManager {
 	levelData.clear();
     }
 
-    private void loadWorldElements() {
+    private static void loadWorldElements() {
 	loadData();
 	worldElements = new WorldElement[levelData.size()];
 	for (int i = 0; i < levelData.size(); i++) {
@@ -149,11 +156,11 @@ public class ResourceManager {
 	}
     }
 
-    public BackgroundElement[] getBackgroundElements() {
+    public static BackgroundElement[] getBackgroundElements() {
 	return backgroundElements;
     }
 
-    public WorldElement[] getWorldElements() {
+    public static WorldElement[] getWorldElements() {
 	return worldElements;
     }
     // ---------End of Chandra's buggy code---------------------------------
@@ -186,6 +193,7 @@ public class ResourceManager {
 	    break;
 	case WORLD_ELEMENT:
 	    break;
+	// Should never get here, if it does, avoid crashing.
 	default:
 	    return;
 	}
@@ -273,13 +281,15 @@ public class ResourceManager {
 	    }
 
 	} catch (UnsupportedAudioFileException e) {
-	    // TODO Auto-generated catch block
+	    System.out.println("Audio format not supported");
 	    e.printStackTrace();
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block
+	    System.out.println("Couldn't load file");
 	    e.printStackTrace();
 	} catch (LineUnavailableException e) {
 	    // TODO Auto-generated catch block
+	    System.out.println("Audio line already in use");
 	    e.printStackTrace();
 	}
     }
@@ -301,28 +311,32 @@ public class ResourceManager {
 	BufferedOutputStream fos = null;
 	try {
 	    fos = new BufferedOutputStream(new FileOutputStream("savegame.dat"));
-	} catch (FileNotFoundException e1) {
+	} catch (FileNotFoundException e) {
 	    // TODO Auto-generated catch block
-	    e1.printStackTrace();
+	    System.out.println("File not found");
+	    e.printStackTrace();
 	}
 	ObjectOutputStream oos = null;
 	try {
 	    oos = new ObjectOutputStream(fos);
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-	try {
 	    oos.writeInt(12345);
 	    oos.close();
 	} catch (IOException e) {
+	    System.out.println("Couldn't save file");
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
     }
-    // ----------- End of Wild Test -----------
 
-    public static HashMap<String, Clip> getClips(ResourceType type) {
+    // ----------- End of Wild Test -----------
+    /**
+     * 
+     * @param type
+     *            Type of "clip" that will be returned by this method. Can be
+     *            any of MUSIC, NARRATION or SOUNDEFFECT.
+     * @return HashMap with values of type Clip and keys of type String.
+     */
+    public static HashMap<String, Clip> getClips(AudioType type) {
 	switch (type) {
 	case MUSIC:
 	    return music;
@@ -330,11 +344,14 @@ public class ResourceManager {
 	    return narration;
 	case SOUNDEFFECT:
 	    return sounds;
+	// Should never get here, something must really have gone wrong if that
+	// happens.
 	default:
 	    return null;
 	}
     }
 
+    // TODO Finish this method and its enum
     public static HashMap<String, BufferedImage> getImages(ResourceType type) {
 	switch (type) {
 	case BACKGROUND_ELEMENT:

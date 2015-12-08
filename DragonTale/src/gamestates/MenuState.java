@@ -11,15 +11,13 @@ import tools.ResourceManager.ResourceType;
 public class MenuState extends GameState {
 
 	private final String LEVEL_PATH;
-	private ResourceManager resources;
 	private LevelPainter painter;
 	
-	public MenuState(String path) {
-		
+	public MenuState(String path) {		
 		this.LEVEL_PATH = path;
-		this.resources = new ResourceManager(LEVEL_PATH);
-		this.painter = new LevelPainter(resources);
-		resources.loadAllData();
+		ResourceManager.loadFile(ResourceType.LEVELDATA, LEVEL_PATH, null);
+		this.painter = new LevelPainter();
+		ResourceManager.loadAllData();
 		// Test code
 		ResourceManager.loadFile(ResourceType.MUSIC, "/Music/TITLE_01.mp3", "menu_theme");
 		AudioManager.init(AudioType.MUSIC);
@@ -33,7 +31,7 @@ public class MenuState extends GameState {
 	}
 
 	@Override
-	public void update() {
+	public void tick() {
 
 	}
 
@@ -43,13 +41,7 @@ public class MenuState extends GameState {
 	}
 
 	@Override
-	public void keyPressed(int k) {
-
+	public void handleInput() {
+	   	    
 	}
-
-	@Override
-	public void keyReleased(int k) {
-
-	}
-
 }

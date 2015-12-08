@@ -1,6 +1,7 @@
 package entities;
 
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -104,6 +105,7 @@ public class Entity {
      *            The graphics object.
      */
     public void draw(Graphics2D g) {
+	g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	g.drawImage(DEFAULT_IMAGE, (int) getScaled(xPosition), (int) getScaled(yPosition), getScaled(WIDTH),
 		getScaled(HEIGHT), null);
     }

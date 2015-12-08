@@ -7,19 +7,13 @@ import entities.WorldElement;
 
 public class LevelPainter{
 
-	ResourceManager resources;
-
-	public LevelPainter(ResourceManager resources) {
-		this.resources = resources;
-	}
-
 	public void drawLevel(Graphics2D g) {
-		for (BackgroundElement element : resources.getBackgroundElements()) {
+		for (BackgroundElement element : ResourceManager.getBackgroundElements()) {
 			element.scroll();
 			element.draw(g);
 		}
 		
-		for (WorldElement element : resources.getWorldElements()) {
+		for (WorldElement element : ResourceManager.getWorldElements()) {
 			element.scroll();
 			element.draw(g);
 		}

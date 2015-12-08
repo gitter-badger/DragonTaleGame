@@ -4,8 +4,6 @@ import java.util.HashMap;
 
 import javax.sound.sampled.Clip;
 
-import tools.ResourceManager.ResourceType;
-
 public class AudioManager {
 
     public enum AudioType {
@@ -41,13 +39,13 @@ public class AudioManager {
     public static void init(AudioType type) {
 	switch (type) {
 	case MUSIC:
-	    clips.putAll(ResourceManager.getClips(ResourceType.MUSIC));
+	    clips.putAll(ResourceManager.getClips(AudioType.MUSIC));
 	    break;
 	case NARRATION:
-	    clips.putAll(ResourceManager.getClips(ResourceType.NARRATION));
+	    clips.putAll(ResourceManager.getClips(AudioType.NARRATION));
 	    break;
 	case SOUNDEFFECT:
-	    clips.putAll(ResourceManager.getClips(ResourceType.SOUNDEFFECT));
+	    clips.putAll(ResourceManager.getClips(AudioType.SOUNDEFFECT));
 	    break;
 	default:
 	    break;
