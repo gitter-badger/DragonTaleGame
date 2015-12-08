@@ -17,9 +17,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
     private static final long serialVersionUID = 1L;
 
-    // Auto 16:9 aspect ratio, just set the width
+    // Auto 4:3 aspect ratio, just set the width
     public static final int WIDTH = 320;
-    public static final int HEIGHT = WIDTH / 16 * 9;
+    public static final int HEIGHT = WIDTH / 4 * 3;
 
     public static final int SCALE = 3;
 
