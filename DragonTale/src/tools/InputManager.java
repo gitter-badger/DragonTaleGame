@@ -25,6 +25,9 @@ public class InputManager {
 	UP, RIGHT, DOWN, LEFT, BUTTON1, BUTTON2, BUTTON3, BUTTON4, BUTTON5, BUTTON6
     };
 
+    private InputManager() {
+    }
+
     /**
      * InputManager's equivalent of an init() method.
      * 
