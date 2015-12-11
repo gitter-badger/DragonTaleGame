@@ -10,6 +10,8 @@ import java.text.DecimalFormat;
 import javax.swing.JPanel;
 
 import gamestates.MenuState;
+import tools.InputManager;
+import tools.InputManager.Keys;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -46,6 +48,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     private void initializeComponents() {
 	isRunning = true;
+	// Initialize the InputManager
+	InputManager.setKeyMappings(getInputMap(WHEN_FOCUSED), getActionMap());
     }
 
     public void run() {
@@ -53,26 +57,25 @@ public class GamePanel extends JPanel implements Runnable {
 
 	int frames = 0;
 	long previousUpdate = 0;
+	// the point in time (in nanoseconds) in which an iteration of the
+	// loop is started.
+	long startTime;
+
+	// the point in time (in nanoseconds) in which the same iteration of
+	// the loop is finished.
+	long endTime;
+
+	// the elapsed time (in milliseconds) between the start and end the
+	// iteration.
+	int elapsedTime;
+
+	// the time (in milliseconds) to wait, until the next iteration of
+	// the loop.
+	int waitTime;
 	while (isRunning) {
-	    // the point in time (in nanoseconds) in which an iteration of the
-	    // loop
-	    // is started.
-	    long startTime;
-
-	    // the point in time (in nanoseconds) in which the same iteration of
-	    // the
-	    // loop is finished.
-	    long endTime;
-
-	    // the elapsed time (in milliseconds) between the start and end the
-	    // iteration.
-	    long elapsedTime;
-
-	    // the time (in milliseconds) to wait, until the next iteration of
-	    // the
-	    // loop.
-	    long waitTime;
-
+	    startTime = System.nanoTime();
+	    // Reset the InputManager every frame.
+	    InputManager.resetKeyStates();
 	    if (frames > 59) {
 		currentFPS = 60 / ((System.nanoTime() - previousUpdate) / 1000000000.0);
 		frames = 0;
@@ -80,22 +83,38 @@ public class GamePanel extends JPanel implements Runnable {
 	    } else {
 		frames++;
 	    }
-	    startTime = System.nanoTime();
 
 	    repaint();
 
 	    endTime = System.nanoTime();
 
 	    elapsedTime = (int) ((endTime - startTime) / 1000000);
-	    // TODO Figure out why do we get negative values at random intervals
-	    // when the window is inactive
 	    waitTime = (int) (targetTime - elapsedTime);
-
-	    try {
-		Thread.sleep(waitTime);
-	    } catch (Exception e) {
-		e.printStackTrace();
+	    // If we are not running behind, pause for the remaining time.
+	    if (waitTime > 0) {
+		try {
+		    Thread.sleep(waitTime);
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
 	    }
+	    // Input test
+	    if (InputManager.isPressed(Keys.UP)) {
+		System.out.println(Keys.UP);
+	    }
+	    if (InputManager.isPressed(Keys.DOWN)) {
+		System.out.println(Keys.DOWN);
+	    }
+	    if (InputManager.isPressed(Keys.LEFT)) {
+		System.out.println(Keys.LEFT);
+	    }
+	    if (InputManager.isPressed(Keys.RIGHT)) {
+		System.out.println(Keys.RIGHT);
+	    }
+	    if (InputManager.isPressed(Keys.BUTTON1)) {
+		System.out.println(Keys.BUTTON1);
+	    }
+	    // End of input test
 	}
     }
 
