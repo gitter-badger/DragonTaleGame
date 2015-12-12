@@ -2,7 +2,7 @@ package tools;
 
 import java.awt.image.BufferedImage;
 
-public class Animation {
+public abstract class Animation {
     // Array that contains the frames that will be used for animation.
     private BufferedImage[] frames;
     // This variable stores the frame # that is being displayed.
@@ -10,7 +10,6 @@ public class Animation {
     // This variable determines how many of the frames in the frames array will
     // actually be used for animation.
     private int numOfFrames;
-
     // Counter variable to count the number of frames that have passed.
     private int count;
     // This variable determines the delay between frames.
@@ -83,7 +82,8 @@ public class Animation {
 
     /**
      * Update method. It should be called every frame the animation is to be
-     * played.
+     * played. This method will only work for frame-based animation, for custom
+     * animations, please override customTick() instead.
      */
     public void tick() {
 	// If the delay is -1, that means it is stopped, so there's nothing to
@@ -162,4 +162,17 @@ public class Animation {
     public boolean hasPlayed(int i) {
 	return timesPlayed == i;
     }
+
+    /**
+     * When creating custom animations, this method must be implemented instead
+     * of using the normal tick() method.
+     */
+    public abstract void customTick();
+
+    /**
+     * Template method for an entirely custom animation. Could be anything from
+     * color changing to a screen shake effect to simply moving something across
+     * the screen.
+     */
+    public abstract void customAnimation();
 }
