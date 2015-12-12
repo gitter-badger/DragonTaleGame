@@ -3,6 +3,7 @@ package tools;
 import java.util.HashMap;
 
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 
 public class AudioManager {
 
@@ -126,6 +127,24 @@ public class AudioManager {
 	if (clips.get(s).isRunning())
 	    return;
 	clips.get(s).start();
+    }
+
+    /**
+     * This method is similar to the resume() method. The difference is that
+     * this method will ensure that the audio resumed keeps looping. The
+     * resume() method only guarantees that the clip will finish playing, not
+     * that it will keep looping.
+     * 
+     * @param s
+     *            Name (key) of the clip to resume.
+     */
+    public static void resumeLoop(String s) {
+	Clip c = clips.get(s);
+	// Oops, the clip with that key doesn't exist.
+	if (c == null)
+	    return;
+	// Ensure that the clip loops.
+	c.loop(Clip.LOOP_CONTINUOUSLY);
     }
 
     /**
@@ -253,5 +272,38 @@ public class AudioManager {
 	// Stop the clip, otherwise, the next operation will crash
 	stop(s);
 	clips.get(s).close();
+    }
+
+    /**
+     * This method controls the volume of the specified clip.
+     * 
+     * @param s
+     *            Name (key) of the clip whose volume is to be manipulated.
+     * @param volume
+     *            Amount to decrease/increase the volume by (in dB).
+     */
+    public static void setVolume(String s, float volume) {
+	Clip c = clips.get(s);
+	// Oops, the clip with that key doesn't exist.
+	if (c == null)
+	    return;
+	// In Java, the volume of sampled sounds can be changed using
+	// FloatControl.
+	FloatControl vol = (FloatControl) c.getControl(FloatControl.Type.MASTER_GAIN);
+	vol.setValue(volume);
+    }
+
+    /**
+     * This method can be used to check if a clip is playing.
+     * 
+     * @param s
+     *            Name (key) of the clip to check for playing/stopped status.
+     * @return Whether or not the clip is playing.
+     */
+    public static boolean isPlaying(String s) {
+	Clip c = clips.get(s);
+	if (c == null)
+	    return false;
+	return c.isRunning();
     }
 }
