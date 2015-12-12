@@ -19,7 +19,8 @@ public class InputManager {
     public static boolean keyState[] = new boolean[NUM_KEYS];
 
     /**
-     * The enum determines the order in which the keys are laid out.
+     * The enum determines the order in which the keys are laid out. It also
+     * contains the keymappings.
      */
     public enum Keys {
 	UP, RIGHT, DOWN, LEFT, BUTTON1, BUTTON2, BUTTON3, BUTTON4, BUTTON5, BUTTON6
@@ -55,8 +56,9 @@ public class InputManager {
 	keyMappings[9] = KeyEvent.VK_NUMPAD6;
 	// --------End of Hard-coded, temporary values-----------------
 	for (Keys key : Keys.values()) {
-	    im.put(KeyStroke.getKeyStroke(keyMappings[key.ordinal()], 0), key.name());
-	    am.put(key.name(), new AbstractAction() {
+	    // This represents a keyPressed.
+	    im.put(KeyStroke.getKeyStroke(keyMappings[key.ordinal()], 0, false), key.name() + "_pressed");
+	    am.put(key.name() + "_pressed", new AbstractAction() {
 		private static final long serialVersionUID = 1L;
 
 		@Override
@@ -66,13 +68,27 @@ public class InputManager {
 		    keySet(keyMappings[key.ordinal()], true);
 		}
 	    });
+	    // This represents a keyReleased.
+	    im.put(KeyStroke.getKeyStroke(keyMappings[key.ordinal()], 0, true), key.name() + "_released");
+	    am.put(key.name() + "_released", new AbstractAction() {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+		    // When a key is released, set the pressed state of that key
+		    // to "false".
+		    keySet(keyMappings[key.ordinal()], false);
+		}
+	    });
 	}
     }
 
     /**
-     * This method resets all the key states back to false. This method must be
-     * called from within the game loop, otherwise, this class will produce
-     * "sticky" input.
+     * This method resets all the key states back to false. Calling this method
+     * is optional, but recommended, since this class will generate input faster
+     * than it can be consumed. For example, pressing the "UP" key for less than
+     * a second will result in the input being registered twice, and that's
+     * assuming the key repeat rate OS setting is set to a relatively slow value.
      */
     public static void resetKeyStates() {
 	for (Keys i : Keys.values()) {
